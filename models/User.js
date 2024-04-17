@@ -1,5 +1,5 @@
 // Importing the required dependencies from the mongoose library
-const { Schema, model, Types } = require('mongoose'); 
+const { Schema, model } = require('mongoose'); 
 const userSchema = new Schema(
   {
     username: {
@@ -13,11 +13,7 @@ const userSchema = new Schema(
         type: String,
         required: true,
         unique: true,
-        validate: { 
-          validator: function(v) {
-              return /^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$/.test(v);
-          }
-      }
+        match: [/.+@.+\..+/, 'Email has to match'],
     },
 
     friends:[
@@ -35,18 +31,19 @@ const userSchema = new Schema(
   },
   {
     toJSON: {
-      virtuals: true, // enables virtual properties
+      virtuals: true,
     },
-    id: false, // disables the default '_id' field in the User model
+    id: false,
 }
 );
 
 userSchema.virtual('friendCount').get(function(){
     return this.friends.length;
-});
-// Creating the User model from the userSchema
+  }
+);
+
 const User = model('User',userSchema)
-// Exporting the User model as a module
+
 module.exports = User
 
 

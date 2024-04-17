@@ -1,15 +1,16 @@
-// Import required packages and files
 const express =  require('express');
 const db = require('./config/connection');
 const routes = require('./routes');
-// Set up environment variables
+
 const PORT = process.env.PORT || 3002;
 const app = express();
-// Use middleware to parse incoming data
+
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-// Use routes defined in routes.js
 app.use(routes); 
+
+db.on('error', console.error.bind(console, 'connection error:'));
+
 // Connect to the MongoDB database and start the server
 db.once('open', () => {
     app.listen(PORT, () => {
